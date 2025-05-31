@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple URL Shortener</h1>
+  <input id="longUrl" type="text" placeholder="Enter long URL" size="50" />
+  <button onclick="shortenUrl()">Shorten</button>
+  <p id="shortUrl"></p>
+
+  <script>
+    async function shortenUrl() {
+      const longUrl = document.getElementById("longUrl").value;
+
+      if (!longUrl) {
+        alert("Please enter a URL!");
+        return;
+      }
+
+      try {
+        const response = await fetch("https://api-ssl.bitly.com/v4/shorten", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer 4c8f6eab3b808747ea338630aec116970cf01e89",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ long_url: longUrl })
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to shorten URL");
+        }
+
+        const data = await response.json();
+        document.getElementById("shortUrl").innerHTML = `Short URL: <a href="${data.link}" target="_blank">${data.link}</a>`;
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
